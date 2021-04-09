@@ -1,9 +1,7 @@
 import operator
 
 from django.conf import settings
-
 from moneyed import CURRENCIES, DEFAULT_CURRENCY, DEFAULT_CURRENCY_CODE
-
 
 # The default currency, you can define this in your project's settings module
 # This has to be a currency object imported from moneyed
@@ -23,9 +21,6 @@ if CURRENCY_CHOICES is None:
 
 CURRENCY_CHOICES.sort(key=operator.itemgetter(1, 0))
 DECIMAL_PLACES = getattr(settings, "CURRENCY_DECIMAL_PLACES", 2)
-DECIMAL_PLACES_DISPLAY = getattr(
-    settings, "CURRENCY_DECIMAL_PLACES_DISPLAY", {currency[0]: DECIMAL_PLACES for currency in CURRENCY_CHOICES}
-)
 
 OPEN_EXCHANGE_RATES_URL = getattr(settings, "OPEN_EXCHANGE_RATES_URL", "https://openexchangerates.org/api/latest.json")
 OPEN_EXCHANGE_RATES_APP_ID = getattr(settings, "OPEN_EXCHANGE_RATES_APP_ID", None)

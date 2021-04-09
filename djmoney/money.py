@@ -1,3 +1,4 @@
+from babel.core import Locale, UnknownLocaleError
 from django.conf import settings
 from django.db.models import F
 from django.utils import translation
@@ -5,9 +6,9 @@ from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
 from moneyed import Currency, Money as DefaultMoney
-from moneyed.localization import _FORMATTER, format_money
+from moneyed.l10n import format_money
 
-from .settings import DECIMAL_PLACES, DECIMAL_PLACES_DISPLAY
+from .settings import DECIMAL_PLACES
 
 __all__ = ["Money", "Currency"]
 
@@ -20,22 +21,9 @@ class Money(DefaultMoney):
 
     use_l10n = None
 
-    def __init__(self, *args, decimal_places_display=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
-        self._decimal_places_display = decimal_places_display
         super().__init__(*args, **kwargs)
-
-    @property
-    def decimal_places_display(self):
-        if self._decimal_places_display is None:
-            return DECIMAL_PLACES_DISPLAY.get(self.currency.code, self.decimal_places)
-
-        return self._decimal_places_display
-
-    @decimal_places_display.setter
-    def decimal_places_display(self, value):
-        """ Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
-        self._decimal_places_display = value
 
     def _copy_attributes(self, source, target):
         """Copy attributes to the new `Money` instance.
@@ -95,7 +83,10 @@ class Money(DefaultMoney):
         return self.use_l10n
 
     def __str__(self):
-        kwargs = {"money": self, "decimal_places": self.decimal_places_display}
+        kwargs = {
+            "money": self,
+        }
+
         if self.is_localized:
             locale = get_current_locale()
             if locale:
@@ -155,14 +146,20 @@ def get_current_locale():
     language = translation.get_language() or settings.LANGUAGE_CODE
     locale = translation.to_locale(language)
 
-    if locale.upper() in _FORMATTER.formatting_definitions:
-        return locale
+    try:
+        lc = Locale.parse(locale)
+    except UnknownLocaleError:
+        return ""
+    else:
+        if not lc.territory:
+            try:
+                lc = Locale.parse("%s_%s" % (locale, locale.upper()))
+            except UnknownLocaleError:
+                return locale
+            else:
+                return str(lc).upper()
 
-    locale = ("%s_%s" % (locale, locale)).upper()
-    if locale in _FORMATTER.formatting_definitions:
-        return locale
-
-    return ""
+        return str(lc)
 
 
 def maybe_convert(value, currency):
