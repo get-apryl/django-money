@@ -4,12 +4,10 @@ from django.utils import translation
 from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
-
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
 
 from .settings import DECIMAL_PLACES, DECIMAL_PLACES_DISPLAY
-
 
 __all__ = ["Money", "Currency"]
 
@@ -104,6 +102,12 @@ class Money(DefaultMoney):
                 kwargs["locale"] = locale
 
         return format_money(**kwargs)
+
+    def __repr__(self):
+        return "<Money: %s %s>" % (self.amount, self.currency)
+
+    def for_eval(self):
+        return super().__repr__()
 
     def __html__(self):
         return mark_safe(avoid_wrapping(conditional_escape(str(self))))
