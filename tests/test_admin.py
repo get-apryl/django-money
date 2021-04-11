@@ -1,8 +1,11 @@
 import django.contrib.admin.utils as admin_utils
+
 import pytest
 
 from djmoney.money import Money
+
 from .testapp.models import ModelWithVanillaMoneyField
+
 
 MONEY_FIELD = ModelWithVanillaMoneyField._meta.get_field("money")
 INTEGER_FIELD = ModelWithVanillaMoneyField._meta.get_field("integer")

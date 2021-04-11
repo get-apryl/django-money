@@ -1,14 +1,17 @@
-from babel.core import Locale, UnknownLocaleError
 from django.conf import settings
 from django.db.models import F
 from django.utils import translation
 from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
+
+from babel.core import Locale, UnknownLocaleError
+
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.l10n import format_money
 
 from .settings import DECIMAL_PLACES
+
 
 __all__ = ["Money", "Currency"]
 

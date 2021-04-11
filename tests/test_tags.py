@@ -1,6 +1,7 @@
-import pytest
 from django.template import Context, Template, TemplateSyntaxError
 from django.utils.translation import override
+
+import pytest
 
 from djmoney.money import Money
 from djmoney.templatetags.djmoney import MoneyLocalizeNode

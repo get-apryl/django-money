@@ -1,5 +1,6 @@
-import pytest
 from django.utils.translation import override
+
+import pytest
 
 from djmoney.money import DefaultMoney, Money, get_current_locale
 
@@ -7,9 +8,11 @@ from djmoney.money import DefaultMoney, Money, get_current_locale
 def test_repr():
     assert repr(Money("10.5", "USD")) == "<Money: 10.5 USD>"
 
+
 def test_for_eval():
     m = Money("10.5", "USD")
     assert m == eval(m.for_eval())
+
 
 def test_html_safe():
     assert Money("10.5", "EUR").__html__() == u"€10.50"

@@ -3,11 +3,9 @@ from decimal import Decimal
 import pytest
 
 from djmoney.money import Money
-from ..testapp.models import (
-    ModelWithVanillaMoneyField,
-    NullMoneyFieldModel,
-    ValidatedMoneyModel,
-)
+
+from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel, ValidatedMoneyModel
+
 
 pytestmark = pytest.mark.django_db
 serializers = pytest.importorskip("rest_framework.serializers")

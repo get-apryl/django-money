@@ -10,6 +10,7 @@ import pytest
 from djmoney import settings
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
+
 from .testapp.forms import (
     DefaultMoneyModelForm,
     DefaultPrecisionModelForm,
@@ -26,6 +27,7 @@ from .testapp.forms import (
     ValidatedMoneyModelForm,
 )
 from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
+
 
 pytestmark = pytest.mark.django_db
 

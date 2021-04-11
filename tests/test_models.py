@@ -6,17 +6,19 @@ Created on May 7, 2011
 import datetime
 from copy import copy
 
-import pytest
 from django import VERSION
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
 from django.db.migrations.writer import MigrationWriter
 from django.db.models import Case, F, Func, Q, Value, When
 from django.utils.translation import override
-from moneyed import Money as OldMoney
+
+import pytest
 
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
+from moneyed import Money as OldMoney
+
 from .testapp.models import (
     AbstractModel,
     BaseModel,
@@ -48,6 +50,7 @@ from .testapp.models import (
     ProxyModelWrapper,
     SimpleModel,
 )
+
 
 pytestmark = pytest.mark.django_db
 
