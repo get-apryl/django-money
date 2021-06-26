@@ -3,9 +3,11 @@ from decimal import Decimal
 import pytest
 
 from djmoney.money import Money
-
-from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel, ValidatedMoneyModel
-
+from ..testapp.models import (
+    ModelWithVanillaMoneyField,
+    NullMoneyFieldModel,
+    ValidatedMoneyModel,
+)
 
 pytestmark = pytest.mark.django_db
 serializers = pytest.importorskip("rest_framework.serializers")
@@ -65,7 +67,7 @@ class TestMoneyField:
             (NullMoneyFieldModel, "field", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
             (ModelWithVanillaMoneyField, "money", None, Money(10, "USD"), Money(10, "USD")),
             (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, Money(10, "USD"), Money(10, "USD")),
-            (ModelWithVanillaMoneyField, "money", None, 10, Money(10, "XYZ")),
+            (ModelWithVanillaMoneyField, "money", None, 10, Money(10, "EUR")),
             (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
         ),
     )

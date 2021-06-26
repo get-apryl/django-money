@@ -1,17 +1,14 @@
+from babel.core import Locale, UnknownLocaleError
 from django.conf import settings
 from django.db.models import F
 from django.utils import translation
 from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
-
-from babel.core import Locale, UnknownLocaleError
-
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.l10n import format_money
 
-from .settings import DECIMAL_PLACES
-
+from .settings import DECIMAL_PLACES, DEFAULT_CURRENCY
 
 __all__ = ["Money", "Currency"]
 
@@ -26,6 +23,11 @@ class Money(DefaultMoney):
 
     def __init__(self, *args, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
+        if len(args) == 1 and 'currency' not in kwargs:
+            args += (DEFAULT_CURRENCY,)
+        elif len(args) == 0:
+            kwargs.setdefault('amount', 0)
+            kwargs.setdefault('currency', DEFAULT_CURRENCY)
         super().__init__(*args, **kwargs)
 
     def _copy_attributes(self, source, target):

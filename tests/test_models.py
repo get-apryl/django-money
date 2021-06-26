@@ -6,19 +6,17 @@ Created on May 7, 2011
 import datetime
 from copy import copy
 
+import pytest
 from django import VERSION
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
 from django.db.migrations.writer import MigrationWriter
 from django.db.models import Case, F, Func, Q, Value, When
 from django.utils.translation import override
-
-import pytest
+from moneyed import Money as OldMoney
 
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
-from moneyed import Money as OldMoney
-
 from .testapp.models import (
     AbstractModel,
     BaseModel,
@@ -51,7 +49,6 @@ from .testapp.models import (
     SimpleModel,
 )
 
-
 pytestmark = pytest.mark.django_db
 
 
@@ -60,7 +57,7 @@ class TestVanillaMoneyField:
         "model_class, kwargs, expected",
         (
             (ModelWithVanillaMoneyField, {"money": Money("100.0")}, Money("100.0")),
-            (ModelWithVanillaMoneyField, {"money": OldMoney("100.0")}, Money("100.0")),
+            (ModelWithVanillaMoneyField, {"money": OldMoney("100.0", "EUR")}, Money("100.0")),
             (BaseModel, {}, Money(0, "USD")),
             (BaseModel, {"money": "111.2"}, Money("111.2", "USD")),
             (BaseModel, {"money": Money("123", "PLN")}, Money("123", "PLN")),
@@ -150,7 +147,7 @@ class TestVanillaMoneyField:
     @pytest.mark.parametrize("money_class", (Money, OldMoney))
     @pytest.mark.parametrize("field_name", ("money", "second_money"))
     def test_save_new_value(self, field_name, money_class):
-        ModelWithVanillaMoneyField.objects.create(**{field_name: money_class("100.0")})
+        ModelWithVanillaMoneyField.objects.create(**{field_name: money_class("100.0", "EUR")})
 
         # Try setting the value directly
         retrieved = ModelWithVanillaMoneyField.objects.get()
